@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+    var lib = {
+        /**
+         * @param {Array} collection
+         * @params {Function[]} – Функции для запроса
+         * @returns {Array}
+         */
+        query: function(collection)
+    {
+        if (arguments.length == 1)
+            return JSON.parse(JSON.stringify(collection));
+
+        var actions = [].slice.call(arguments, 1);
+        var filters = [];
+        var selects = [];
+
+        actions.forEach(function (item, index) {
+            if (item.toString().includes('filter')) filters.push(index);
+            else selects.push(index);
+        });
+
+        var newData = JSON.parse(JSON.stringify(collection));
+
+        for (var i = 0; i < filters.length; i++)
+            newData = actions[filters[i]](newData);
+
+        for (var i = 0; i < selects.length; i++)
+            newData = actions[selects[i]](newData);
+
+        return newData;
+    },
+
+    /**
+     * @params {String[]}
+     */
+    select: function (...fields) {
+        return function (data) {
+            var keys = Object.keys(data[0]);
+            keys = new Set(keys);
+            console.log(keys);
+            console.log(keys.has("name"));
+            return data.map(function (x) {
+                var item = {};
+                fields.forEach(function (field) {
+                    if (keys.has(field)) {
+                        item[field] = x[field];
+                    }
+                });
+                return item;
+            })
+        }
+    },
+
+    /**
+     * @param {String} property – Свойство для фильтрации
+     * @param {Array} values – Массив разрешённых значений
+     */
+    filterIn: function (field, values) {
+        return function (data) {
+            return data.filter(function (x) {
+                return values.indexOf(x[field]) > -1;
+            })
+        }
+    }
+    }
+    var friends = [
+        {
+            name: 'Сэм',
+            gender: 'Мужской',
+            email: 'luisazamora@example.com',
+            favoriteFruit: 'Картофель'
+        },
+        {
+            name: 'Эмили',
+            gender: 'Женский',
+            email: 'example@example.com',
+            favoriteFruit: 'Яблоко'
+        },
+        {
+            name: 'Мэт',
+            gender: 'Мужской',
+            email: 'danamcgee@example.com',
+            favoriteFruit: 'Яблоко'
+        },
+        {
+            name: 'Брэд',
+            gender: 'Мужской',
+            email: 'newtonwilliams@example.com',
+            favoriteFruit: 'Банан'
+        },
+        {
+            name: 'Шерри',
+            gender: 'Женский',
+            email: 'danamcgee@example.com',
+            favoriteFruit: 'Картофель'
+        },
+        {
+            name: 'Керри',
+            gender: 'Женский',
+            email: 'danamcgee@example.com',
+            favoriteFruit: 'Апельсин'
+        },
+        {
+            name: 'Стелла',
+            gender: 'Женский',
+            email: 'waltersguzman@example.com',
+            favoriteFruit: 'Картофель'
+        }
+    ];
+
+    var bestFriends = lib.query(
+        friends,
+        lib.select('name', 'gender', 'email', 'bamboleylo'),
+        lib.filterIn('favoriteFruit', ['Яблоко', 'Картофель'])
+    );
+    console.log(bestFriends)
+</script>
+</body>
+</html>
