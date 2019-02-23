@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<script>
+    var phone_book = {};
+    function work_with_book(_command) {
+        var command = _command.split(' ');
+
+        // 'ADD Ivan 555-10-01,555-10-03'
+        if (command[0] == "ADD") {
+            var name = command[1];
+            var _number = command[2].split(',');
+            var number = '';
+            if (name in phone_book) {
+                number = phone_book[name];
+                number += ', ';
+            }
+            for (var i = 0; i < _number.length; i++) {
+                if (i != (_number.length - 1)) {
+                    number += _number[i];
+                    number += ', ';
+                }
+                else {
+                    number += _number[i];
+                }
+            }
+            phone_book[name] = number;
+            //console.log('ADD: ', phone_book);
+        }
+
+        // 'REMOVE_PHONE 555-10-03'
+        if (command[0] == "REMOVE_PHONE") {
+            var del_n = command[1];
+            var name = '';
+            var line = [];
+            for (key in phone_book) {
+                var flag = false;
+                var number = phone_book[key];
+                var _number = number.split(', ');
+                for (var i = 0; i < _number.length; i++) {
+                    if (_number[i] == del_n) {
+                        name = key;
+                        _number.splice(i, 1);
+                        line = _number;
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag) break;
+            }
+            if (flag) {
+                var new_number = '';
+                for (var i = 0; i < line.length; i++) {
+                    if (i != (_number.length - 1)) {
+                        new_number += line[i];
+                        new_number += ', ';
+                    }
+                    else {
+                        new_number += line[i];
+                    }
+                }
+                phone_book[name] = new_number;
+                //console.log('Remove: ', name, new_number);
+                return true;
+            }
+            else {
+                //console.log('not found');
+                return false;
+            }
+        }
+
+        //'SHOW'
+        if (command[0] == "SHOW") {
+            var line = '';
+            var sorted = [];
+
+            for(var key in phone_book) {
+                sorted[sorted.length] = key;
+            }
+            sorted.sort();
+            for (var i=0; i < sorted.length; ++i) {
+                var key = sorted[i];
+                if (phone_book[key] != '') {
+                    line += (key + ': ' + phone_book[key] + ', ' + '\n');
+                }
+            }
+            //console.log('SHOW: ', line.substring(0, line.length - 3));
+            return line.substring(0, line.length - 3);
+        }
+    }
+
+</script>
+</body>
+</html>

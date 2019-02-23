@@ -1,0 +1,70 @@
+/**
+ * @param {String} date
+ * @returns {Object}
+ */
+module.exports = function (date) {
+var obj = {
+            _value: null,
+
+            method: {
+                "years": "FullYear",
+                "months": "Month",
+                "days": "Date",
+                "hours": "Hours",
+                "minutes": "Minutes"
+            },
+
+            get value() {
+                return this+"";
+            },
+
+            init: function (date) {
+                date += '';
+                var _date = date.split(' ')[0].split('-');
+                var _time = date.split(' ')[1].split(':');
+                this._value = new Date(_date[0], _date[1] - 1, _date[2], _time[0], _time[1]);
+                return this;
+            },
+
+            add: function (value, type) {
+                if (value > 0 && type in this.method) {
+                    this._value['set'+this.method[type]](value + this._value['get'+this.method[type]]());
+                    return this;
+                } else {
+                    throw new TypeError();
+                }
+            },
+
+            subtract: function (value, type) {
+                if (value > 0 && type in this.method) {
+                    this._value['set'+this.method[type]](-value + this._value['get'+this.method[type]]());
+                    return this;
+                } else {
+                    throw new TypeError();
+                }
+            },
+
+            toString: function() {
+                var year = this._value.getFullYear();
+                var month = this._value.getMonth();
+                if (parseInt(month) < 10) {
+                    month = '0'+(parseInt(month) + 1);
+                }
+                var day = this._value.getDate();
+                if (parseInt(day) < 10) {
+                    day = '0'+day;
+                }
+                var hours = this._value.getHours();
+                if (parseInt(hours) < 10) {
+                    hours = '0'+hours;
+                }
+                var minutes = this._value.getMinutes();
+                if (parseInt(minutes) < 10) {
+                    minutes = '0'+minutes;
+                }
+                return year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+            }
+        };
+        return obj.init(date);
+
+    };
