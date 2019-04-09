@@ -30,15 +30,19 @@ emitter
     .emit('new_notification');
 
 // Проверяем количество нотификаций
+console.log(notifications.counter)
 assert.equal(notifications.counter, 1, 'Получена одна нотификация');
+console.log("OK")
 
 // В логе сохранено событие
 // Так как обработчик notifications.count отработал первым,
 //  в логах сохранено правильное количество нотификаций
+console.log(logger.logs)
 assert.deepEqual(logger.logs, [
     'Произошло новое событие new_notification',
     'Добавлена новая нотификация. Количество - 1'
 ]);
+console.log("OK")
 
 // На время отключаем логгирование, а затем снова включаем
 emitter
@@ -50,12 +54,15 @@ emitter
     .emit('new_notification');
 
 // Проверяем количество нотификаций
-//assert.equal(notifications.counter, 3, 'Получено три нотификации');
+console.log(notifications.counter)
+assert.equal(notifications.counter, 3, 'Получено три нотификации');
+console.log("OK")
 // Проверяем, что логи были отключены, а затем снова подключены
+console.log(logger.logs)
 assert.deepEqual(logger.logs, [
     'Произошло новое событие new_notification',
     'Добавлена новая нотификация. Количество - 1',
     'Новое событие new_notification!'
 ]);
-
+console.log("OK")
 console.info('OK!');

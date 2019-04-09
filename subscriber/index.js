@@ -21,8 +21,13 @@ module.exports = {
    */
   off: function (event, subscriber) {
     if (this.eventsList.hasOwnProperty(event)) {
-      this.eventsList = this.eventsList[event].filter(function(item) {
-	  return ~(item.subscriber === subscriber);
+      this.eventsList[event] = this.eventsList[event].filter(function(item) {
+	if (Object.is(item.subscriber, subscriber)){
+		return false;
+	}
+	else {
+		return true;
+	}
       });
     }
     return this;
